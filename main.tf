@@ -1,13 +1,14 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+#      source = "hashicorp/aws"
     }
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region  = data.terraform_remote_state.vpc.outputs.aws_region
+  profile = "quique"
 }
 
 resource "random_string" "lb_id" {
@@ -24,8 +25,8 @@ module "elb_http" {
 
   internal = false
 
-  security_groups = []
-  subnets         = []
+  security_groups = data.terraform_remote_state.vpc.outputs.lb_security_group_id
+  subnets         = data.terraform_remote_state.vpc.outputs.public_subnet_ids
 
   number_of_instances = length(aws_instance.app)
   instances           = aws_instance.app.*.id
