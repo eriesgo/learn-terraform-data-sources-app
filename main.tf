@@ -48,14 +48,17 @@ module "elb_http" {
 }
 
 resource "aws_instance" "app" {
-  ami = "ami-04d29b6f966df1537"
+  ami = data.aws_ami.amazon_linux.id
 
   instance_type = var.instance_type
 
   count = var.instances_per_subnet * length(data.terraform_remote_state.vpc.outputs.private_subnet_ids)
 
-  subnet_id              = ""
-  vpc_security_group_ids = []
+  #subnet_id              = ""
+  #vpc_security_group_ids = []
+
+  subnet_id              = data.terraform_remote_state.vpc.outputs.private_subnet_ids[count.index % length(data.terraform_remote_state.vpc.outputs.private_subnet_ids)]
+  vpc_security_group_ids = data.terraform_remote_state.vpc.outputs.app_security_group_ids
 
   user_data = <<-EOF
     #!/bin/bash
