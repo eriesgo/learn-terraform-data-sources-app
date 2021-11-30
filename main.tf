@@ -25,7 +25,7 @@ module "elb_http" {
 
   internal = false
 
-  security_groups = data.terraform_remote_state.vpc.outputs.lb_security_group_id
+  security_groups = data.terraform_remote_state.vpc.outputs.lb_security_group_ids
   subnets         = data.terraform_remote_state.vpc.outputs.public_subnet_ids
 
   number_of_instances = length(aws_instance.app)
