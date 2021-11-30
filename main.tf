@@ -52,6 +52,8 @@ resource "aws_instance" "app" {
 
   instance_type = var.instance_type
 
+  count = var.instances_per_subnet * length(data.terraform_remote_state.vpc.outputs.private_subnet_ids)
+
   subnet_id              = ""
   vpc_security_group_ids = []
 
